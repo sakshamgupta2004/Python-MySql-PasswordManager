@@ -5,7 +5,8 @@ import hashlib
 import mysql.connector
 
 root = Tk()
-conn = mysql.connector.connect(host="localhost", port=3306, user="root", passwd="password_here")
+import db_conn_settings
+conn = mysql.connector.connect(host = db_conn_settings.getHost(), port = db_conn_settings.getPort(), user=db_conn_settings.getUser(), passwd=db_conn_settings.getPassword())
 
 def goToMainPage():
     root.destroy()

@@ -11,6 +11,7 @@ user_file = f'username.cred'
 with open(user_file, 'r') as f:
     username = f.read()
 
+
 def onselect(evt):
     global selected_index
 
@@ -19,7 +20,6 @@ def onselect(evt):
     value = w.get(index)
     selected_index = index
     display_stored_pass(index, value)
-
 
 
 options = [
@@ -33,7 +33,6 @@ window.title("Password Manager")
 top_left = tk.Frame(window)
 top_right = tk.Frame(window)
 
-
 options1 = [
     "All",
     "Mail",
@@ -41,49 +40,44 @@ options1 = [
     "Other"
 ]
 
-tk.Label(top_left,  text='Filter').pack(side=tk.TOP, padx=20, anchor="w")
+tk.Label(top_left, text='Filter').pack(side=tk.TOP, padx=20, anchor="w")
 clicked1 = StringVar()
-clicked1.set( "All" )
-drop1 = OptionMenu( top_left , clicked1 , *options1, command = lambda x: refresh_list())
+clicked1.set("All")
+drop1 = OptionMenu(top_left, clicked1, *options1, command=lambda x: refresh_list())
 drop1.pack(side=tk.TOP, padx=20, anchor="w")
 
-
-
-tk.Label(top_left,  text='Search').pack(fill=tk.Y, padx=(30,0), pady=(20,0), anchor="w")
-searchbar = tk.Entry(top_left, width=25, font ="Helvetica 13")
+tk.Label(top_left, text='Search').pack(fill=tk.Y, padx=(30, 0), pady=(20, 0), anchor="w")
+searchbar = tk.Entry(top_left, width=25, font="Helvetica 13")
 searchbar.config(background="#F4F6F7", highlightbackground="grey")
 searchbar.pack(side=tk.TOP, fill=tk.Y, padx=(10, 0), pady=(0, 10))
 searchbar.bind('<Return>', lambda x: search())
 
-
-list_stored_passes = Listbox(top_left, height=35, width=25, font = "Helvetica 14")
+list_stored_passes = Listbox(top_left, height=35, width=25, font="Helvetica 14")
 list_stored_passes.bind('<<ListboxSelect>>', onselect)
 list_stored_passes.pack(side=tk.TOP, fill=tk.Y, padx=(10, 0), pady=(10, 10))
 
 scroll_list = tk.Scrollbar(top_left)
 scroll_list.pack(side=tk.RIGHT, fill=tk.Y)
 scroll_list.config(command=list_stored_passes.yview)
-list_stored_passes.config(yscrollcommand=scroll_list.set, cursor="hand2", background="#fff5e6", highlightbackground="grey", bd=0, selectbackground="#c9b922")
+list_stored_passes.config(yscrollcommand=scroll_list.set, cursor="hand2", background="#fff5e6",
+                          highlightbackground="grey", bd=0, selectbackground="#c9b922")
 
 text_frame = tk.Frame(top_right)
 
-
-
 clicked = StringVar()
-clicked.set( "Mail" )
-drop = OptionMenu( text_frame , clicked , *options )
+clicked.set("Mail")
+drop = OptionMenu(text_frame, clicked, *options)
 drop.pack(side=tk.TOP, anchor="e")
 
-tk.Label(text_frame, text='Username').pack(fill=tk.Y, padx=(0,5), pady=(0,0), anchor="w")
-username_entry = tk.Entry(text_frame, width=52, font = "Helvetica 13")
+tk.Label(text_frame, text='Username').pack(fill=tk.Y, padx=(0, 5), pady=(0, 0), anchor="w")
+username_entry = tk.Entry(text_frame, width=52, font="Helvetica 13")
 username_entry.config(background="#F4F6F7", highlightbackground="grey")
 username_entry.pack(side=tk.TOP, pady=(0, 5), padx=(0, 10))
 
-
 scroll_text = tk.Frame(text_frame)
 scroll_text.pack(side=tk.RIGHT, fill=tk.Y)
-tk.Label(text_frame, text='Password').pack(fill=tk.Y, padx=(0,5), pady=(0,0), anchor="w")
-password_entry = tk.Entry(text_frame, width=52, font ="Helvetica 13")
+tk.Label(text_frame, text='Password').pack(fill=tk.Y, padx=(0, 5), pady=(0, 0), anchor="w")
+password_entry = tk.Entry(text_frame, width=52, font="Helvetica 13")
 password_entry.config(background="#F4F6F7", highlightbackground="grey")
 password_entry.pack(side=tk.TOP, fill=tk.Y, padx=(0, 5), pady=(0, 10))
 
@@ -94,9 +88,11 @@ photo_add = PhotoImage(file="add.jpeg")
 photo_edit = PhotoImage(file="edit.jpeg")
 photo_delete = PhotoImage(file="delete.jpeg")
 
-btn_save = tk.Button(button_frame, text="Add", command=lambda : save_stored_pass(), image=photo_add)
-btn_edit = tk.Button(button_frame, text="Update", command=lambda : update_stored_pass(), state=tk.DISABLED, image=photo_edit)
-btn_delete = tk.Button(button_frame, text="Delete", command=lambda : delete_stored_pass(), state=tk.DISABLED, image=photo_delete)
+btn_save = tk.Button(button_frame, text="Add", command=lambda: save_stored_pass(), image=photo_add)
+btn_edit = tk.Button(button_frame, text="Update", command=lambda: update_stored_pass(), state=tk.DISABLED,
+                     image=photo_edit)
+btn_delete = tk.Button(button_frame, text="Delete", command=lambda: delete_stored_pass(), state=tk.DISABLED,
+                       image=photo_delete)
 
 btn_save.grid(row=0, column=1)
 btn_edit.grid(row=0, column=2)
@@ -104,14 +100,13 @@ btn_delete.grid(row=0, column=3)
 
 button_frame.pack(side=tk.TOP)
 
-
 top_left.pack(side=tk.LEFT)
 top_right.pack(side=tk.RIGHT)
 
+import db_conn_settings
 
-conn = mysql.connector.connect(host="localhost", port=3306, user="root", passwd="password_here")
-
-
+conn = mysql.connector.connect(host=db_conn_settings.getHost(), port=db_conn_settings.getPort(),
+                               user=db_conn_settings.getUser(), passwd=db_conn_settings.getPassword())
 
 
 def db_insert_stored_pass(conn, user, key):
@@ -150,7 +145,7 @@ def db_update_stored_pass(conn, user, key, key_id):
     if not conn.is_connected():
         conn.connect()
     mycursor = conn.cursor()
-    print (clicked.get())
+    print(clicked.get())
     query = "UPDATE tb_keys SET user = %s, pass = %s, type = %s WHERE key_id = %s"
     val = (user, key, clicked.get(), key_id)
     mycursor.execute(query, val)
@@ -172,6 +167,7 @@ def search():
     refresh_list(searchbar.get())
     searchbar.delete(0, tk.END)
 
+
 def refresh_list(search_str=""):
     global conn
     username_entry.delete(0, tk.END)
@@ -181,16 +177,20 @@ def refresh_list(search_str=""):
     stored_passes_ids.clear()
     init(conn, search_str)
 
+
 def init(conn, search_str=""):
     notes = db_select_all_stored_passes(conn)
 
     for note in notes:
         if note[3] == clicked1.get() or clicked1.get() == 'All':
-            if str(note[1]).__contains__(search_str) or str(note[2]).__contains__(search_str) or str(note[3]).__contains__(search_str):
+            if str(note[1]).__contains__(search_str) or str(note[2]).__contains__(search_str) or str(
+                    note[3]).__contains__(search_str):
                 list_stored_passes.insert(tk.END, note[1])
                 stored_passes_ids.append(note[0])
 
+
 init(conn)
+
 
 def save_stored_pass():
     global conn
@@ -319,8 +319,3 @@ window.wm_maxsize(window.winfo_width(), 400)
 window.wm_minsize(window.winfo_width(), 400)
 window.lift()
 window.mainloop()
-
-
-
-
-
