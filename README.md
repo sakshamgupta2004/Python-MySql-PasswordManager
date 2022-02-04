@@ -1,6 +1,6 @@
 # Python-MySql-PasswordManager
 PasswordManager made in Python and MySql for school project
-To use, change mysql connector properties in both python files. 
+To use, change mysql connector properties in db.conf file. 
 <br/>
 Default connection properties:- 
 <br/>
